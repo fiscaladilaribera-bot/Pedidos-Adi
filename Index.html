@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Pedidos ADI</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      color: #222;
+      padding: 12px;
+    }
+
+    .caja {
+      max-width: 620px;
+      margin: auto;
+      background: #fff;
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    h1, h2, h3 {
+      margin: 0 0 10px 0;
+    }
+
+    h1 {
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .seccion {
+      background: #fafafa;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    select, input, button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-azul { background: #0d6efd; color: white; }
+    .btn-verde { background: #198754; color: white; }
+    .btn-gris { background: #6c757d; color: white; }
+    .btn-rojo { background: #dc3545; color: white; }
+    .btn-naranja { background: #fd7e14; color: white; }
+    .btn-morado { background: #6f42c1; color: white; }
+
+    .grid-productos {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .producto-btn {
+      padding: 14px 10px;
+      border-radius: 12px;
+      background: #e9f2ff;
+      border: 1px solid #cfe2ff;
+      text-align: center;
+      font-weight: bold;
+      color: #0d4ea6;
+      min-height: 78px;
+    }
+
+    .producto-btn small {
+      display: block;
+      margin-top: 4px;
+      font-size: 13px;
+      color: #244b7a;
+    }
+
+    .pedido-vacio {
+      color: #666;
+      font-style: italic;
+      text-align: center;
+      padding: 8px 0;
+    }
+
+    .item {
+      background: white;
+      border: 1px solid #e7e7e7;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 8px;
+    }
+
+    .item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .item-nombre {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .item-sub {
+      color: #555;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .controles-cantidad {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .mini-btn {
+      width: auto;
+      padding: 8px 12px;
+      margin: 0;
+      font-size: 14px;
+      border-radius: 8px;
+    }
+
+    .cantidad-box {
+      min-width: 42px;
+      text-align: center;
+      font-weight: bold;
+      background: #f1f1f1;
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .total-box {
+      background: #eaf7ea;
+      border: 1px solid #cfe9cf;
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .total-box .titulo {
+      font-size: 14px;
+      color: #444;
+    }
+
+    .total-box .monto {
+      font-size: 30px;
+      color: #198754;
+      font-weight: bold;
+      margin-top: 4px;
+    }
+
+    .cambio-box {
+      background: #eef6ff;
+      border: 1px solid #cfe2ff;
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .cambio-box .titulo {
+      font-size: 14px;
+      color: #444;
+    }
+
+    .cambio-box .monto {
+      font-size: 28px;
+      font-weight: bold;
+      color: #0d6efd;
+      margin-top: 4px;
+    }
+
+    .sinpe-info {
+      background: #eefaf0;
+      border: 1px solid #cfe9cf;
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      margin-top: 8px;
+      color: #198754;
+      font-weight: bold;
+    }
+
+    .fila {
+      display: flex;
+      gap: 10px;
+    }
+
+    .fila > * {
+      flex: 1;
+    }
+
+    .resumen {
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    .venta-item {
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    details {
+      margin-top: 10px;
+      background: #fff8db;
+      border: 1px solid #f5df8f;
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .nota {
+      font-size: 13px;
+      color: #666;
+      margin-top: -4px;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 520px) {
+      .grid-productos {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .fila {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="caja">
+    <h1>Pedidos ADI</h1>
+
+    <div class="seccion">
+      <h2>1. Productos rápidos</h2>
+      <div class="grid-productos" id="productosRapidos"></div>
+
+      <label for="producto" style="margin-top:12px;">O agregar desde lista</label>
+      <select id="producto"></select>
+
+      <div class="fila">
+        <input type="number" id="cantidadManual" value="1" min="1" placeholder="Cantidad">
+        <button class="btn-azul" onclick="agregarDesdeLista()">Agregar desde lista</button>
+      </div>
+
+      <button class="btn-gris" onclick="limpiarPedidoActual()">Limpiar pedido actual</button>
+    </div>
+
+    <div class="seccion">
+      <h2>2. Pedido</h2>
+      <div id="lista"></div>
+
+      <div class="total-box">
+        <div class="titulo">Total a cobrar</div>
+        <div class="monto">₡<span id="total">0</span></div>
+      </div>
+    </div>
+
+    <div class="seccion">
+      <h2>3. Pago</h2>
+
+      <label for="metodo">Método de pago</label>
+      <select id="metodo">
+        <option value="efectivo">Efectivo</option>
+        <option value="sinpe">SINPE</option>
+      </select>
+
+      <div id="bloquePago">
+        <label for="pago" id="labelPago">Con cuánto paga</label>
+        <input type="number" id="pago" placeholder="Ingrese monto">
+        <div class="nota" id="notaPago">Digite el monto recibido para calcular el cambio.</div>
+
+        <div class="fila" id="accionesPagoEfectivo">
+          <button class="btn-morado" onclick="ponerPagoExacto()">Pago exacto</button>
+          <button class="btn-gris" onclick="limpiarMontoPago()">Limpiar monto</button>
+        </div>
+      </div>
+
+      <div class="sinpe-info" id="sinpeInfo" style="display:none;">
+        Pago por SINPE: se asume monto exacto igual al total.
+      </div>
+
+      <div class="cambio-box" id="bloqueCambio">
+        <div class="titulo">Cambio</div>
+        <div class="monto">₡<span id="cambio">0</span></div>
+      </div>
+    </div>
+
+    <div class="seccion">
+      <h2>4. Finalizar</h2>
+      <button class="btn-verde" onclick="finalizarVenta(false)">Guardar venta</button>
+      <button class="btn-naranja" onclick="finalizarVenta(true)">Guardar y enviar a cocina</button>
+
+      <details>
+        <summary>Configuración de cocina</summary>
+        <label for="telefonoCocina" style="margin-top:10px;">WhatsApp de cocina</label>
+        <input type="text" id="telefonoCocina" placeholder="Ejemplo: 50688887777">
+      </details>
+    </div>
+
+    <div class="seccion">
+      <h2>Resumen del día</h2>
+      <div class="resumen" id="resumenVentas">
+        Cantidad de ventas: 0<br>
+        Última orden: #000<br>
+        Total vendido: ₡0<br>
+        Efectivo: ₡0<br>
+        SINPE: ₡0
+      </div>
+
+      <h3 style="margin-top:14px;">Últimas 5 ventas</h3>
+      <div id="ultimasVentas"></div>
+
+      <details>
+        <summary>Administración</summary>
+        <div style="margin-top:10px;">
+          <button class="btn-gris" onclick="descargarCSV()">Descargar CSV</button>
+          <button class="btn-rojo" onclick="borrarVentas()">Borrar ventas guardadas</button>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <script>
+    const productos = [
+      { nombre: 'Combo de hamburguesa', precio: 2500 },
+      { nombre: 'Combo de perro caliente', precio: 2000 },
+      { nombre: 'Arroz con pollo', precio: 2500 },
+      { nombre: 'Tacos', precio: 1800 },
+      { nombre: 'Tortillas', precio: 1000 },
+      { nombre: 'cafe', precio: 500},
+      { nombre: 'Te frio', precio: 500 },
+      { nombre: 'Agua dulce', precio: 500 },
+      { nombre: 'Gaseosa', precio: 1500 }
+    ];
+
+    let pedidoActual = [];
+    let total = 0;
+
+    function formatoMoneda(numero) {
+      return Number(numero).toLocaleString('es-CR');
+    }
+
+    function inicializarProductos() {
+      const contenedor = document.getElementById('productosRapidos');
+      const select = document.getElementById('producto');
+
+      contenedor.innerHTML = '';
+      select.innerHTML = '';
+
+      productos.forEach((p, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'producto-btn';
+        btn.innerHTML = `${p.nombre}<small>₡${formatoMoneda(p.precio)}</small>`;
+        btn.onclick = () => agregarProducto(index, 1);
+        contenedor.appendChild(btn);
+
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `${p.nombre} - ${p.precio}`;
+        select.appendChild(option);
+      });
+    }
+
+    function cargarVentas() {
+      const ventas = JSON.parse(localStorage.getItem('ventas')) || [];
+      const telefonoGuardado = localStorage.getItem('telefonoCocina') || '';
+      document.getElementById('telefonoCocina').value = telefonoGuardado;
+      actualizarResumen(ventas);
+      renderUltimasVentas(ventas);
+      renderPedido();
+      actualizarVistaMetodoPago();
+    }
+
+    function guardarVentas(ventas) {
+      localStorage.setItem('ventas', JSON.stringify(ventas));
+      actualizarResumen(ventas);
+      renderUltimasVentas(ventas);
+    }
+
+    function guardarTelefonoCocina() {
+      const telefono = document.getElementById('telefonoCocina').value.trim();
+      localStorage.setItem('telefonoCocina', telefono);
+    }
+
+    function obtenerSiguienteConsecutivo() {
+      let consecutivo = parseInt(localStorage.getItem('consecutivoVentas') || '0', 10);
+      consecutivo += 1;
+      localStorage.setItem('consecutivoVentas', String(consecutivo));
+      return consecutivo;
+    }
+
+    function formatearConsecutivo(numero) {
+      return String(numero).padStart(3, '0');
+    }
+
+    function agregarProducto(indiceProducto, cantidad) {
+      const producto = productos[indiceProducto];
+      const cantidadValida = parseInt(cantidad, 10);
+
+      if (!cantidadValida || cantidadValida < 1) {
+        alert('Ingrese una cantidad válida');
+        return;
+      }
+
+      const existente = pedidoActual.find(i => i.nombre === producto.nombre);
+
+      if (existente) {
+        existente.cantidad += cantidadValida;
+        existente.subtotal = existente.cantidad * existente.precio;
+      } else {
+        pedidoActual.push({
+          nombre: producto.nombre,
+          precio: producto.precio,
+          cantidad: cantidadValida,
+          subtotal: producto.precio * cantidadValida
+        });
+      }
+
+      recalcularTotal();
+      renderPedido();
+      calcularCambioEnPantalla();
+    }
+
+    function agregarDesdeLista() {
+      const indice = parseInt(document.getElementById('producto').value, 10);
+      const cantidad = parseInt(document.getElementById('cantidadManual').value, 10) || 1;
+      agregarProducto(indice, cantidad);
+      document.getElementById('cantidadManual').value = 1;
+    }
+
+    function recalcularTotal() {
+      total = pedidoActual.reduce((acum, item) => acum + item.subtotal, 0);
+    }
+
+    function renderPedido() {
+      const lista = document.getElementById('lista');
+      lista.innerHTML = '';
+
+      if (pedidoActual.length === 0) {
+        lista.innerHTML = '<div class="pedido-vacio">No hay productos agregados todavía.</div>';
+      } else {
+        pedidoActual.forEach((item, index) => {
+          const div = document.createElement('div');
+          div.className = 'item';
+          div.innerHTML = `
+            <div class="item-top">
+              <div class="item-nombre">${item.nombre}</div>
+              <button class="btn-rojo mini-btn" onclick="eliminarItem(${index})">Eliminar</button>
+            </div>
+            <div class="item-sub">
+              ${item.cantidad} x ₡${formatoMoneda(item.precio)} = <strong>₡${formatoMoneda(item.subtotal)}</strong>
+            </div>
+            <div class="controles-cantidad">
+              <button class="btn-gris mini-btn" onclick="cambiarCantidad(${index}, -1)">-</button>
+              <div class="cantidad-box">${item.cantidad}</div>
+              <button class="btn-azul mini-btn" onclick="cambiarCantidad(${index}, 1)">+</button>
+            </div>
+          `;
+          lista.appendChild(div);
+        });
+      }
+
+      document.getElementById('total').textContent = formatoMoneda(total);
+    }
+
+    function cambiarCantidad(index, cambio) {
+      pedidoActual[index].cantidad += cambio;
+
+      if (pedidoActual[index].cantidad <= 0) {
+        pedidoActual.splice(index, 1);
+      } else {
+        pedidoActual[index].subtotal = pedidoActual[index].cantidad * pedidoActual[index].precio;
+      }
+
+      recalcularTotal();
+      renderPedido();
+      calcularCambioEnPantalla();
+    }
+
+    function eliminarItem(index) {
+      pedidoActual.splice(index, 1);
+      recalcularTotal();
+      renderPedido();
+      calcularCambioEnPantalla();
+    }
+
+    function limpiarPedidoActual() {
+      pedidoActual = [];
+      total = 0;
+      document.getElementById('pago').value = '';
+      document.getElementById('cambio').textContent = '0';
+      renderPedido();
+      actualizarVistaMetodoPago();
+    }
+
+    function ponerPagoExacto() {
+      document.getElementById('pago').value = total;
+      calcularCambioEnPantalla();
+    }
+
+    function limpiarMontoPago() {
+      document.getElementById('pago').value = '';
+      calcularCambioEnPantalla();
+    }
+
+    function calcularCambioEnPantalla() {
+      const metodo = document.getElementById('metodo').value;
+      const pagoTexto = document.getElementById('pago').value;
+
+      if (metodo === 'sinpe') {
+        document.getElementById('cambio').textContent = '0';
+        return;
+      }
+
+      if (pagoTexto === '') {
+        document.getElementById('cambio').textContent = '0';
+        return;
+      }
+
+      const pago = parseInt(pagoTexto, 10);
+
+      if (isNaN(pago)) {
+        document.getElementById('cambio').textContent = '0';
+        return;
+      }
+
+      const cambio = pago - total;
+      document.getElementById('cambio').textContent = cambio >= 0 ? formatoMoneda(cambio) : '0';
+    }
+
+    function actualizarVistaMetodoPago() {
+      const metodo = document.getElementById('metodo').value;
+      const bloqueCambio = document.getElementById('bloqueCambio');
+      const bloquePago = document.getElementById('bloquePago');
+      const sinpeInfo = document.getElementById('sinpeInfo');
+
+      if (metodo === 'sinpe') {
+        bloquePago.style.display = 'none';
+        bloqueCambio.style.display = 'none';
+        sinpeInfo.style.display = 'block';
+        document.getElementById('pago').value = '';
+        document.getElementById('cambio').textContent = '0';
+      } else {
+        bloquePago.style.display = 'block';
+        bloqueCambio.style.display = 'block';
+        sinpeInfo.style.display = 'none';
+        calcularCambioEnPantalla();
+      }
+    }
+
+    function finalizarVenta(enviarACocina) {
+      if (pedidoActual.length === 0) {
+        alert('No hay productos en el pedido');
+        return;
+      }
+
+      guardarTelefonoCocina();
+
+      const metodo = document.getElementById('metodo').value;
+      let pago = 0;
+      let cambio = 0;
+
+      if (metodo === 'sinpe') {
+        pago = total;
+        cambio = 0;
+      } else {
+        pago = parseInt(document.getElementById('pago').value, 10);
+
+        if (isNaN(pago) || pago < 0) {
+          alert('Ingrese un monto válido');
+          return;
+        }
+
+        cambio = pago - total;
+
+        if (cambio < 0) {
+          alert('Falta dinero para completar el pago');
+          document.getElementById('cambio').textContent = '0';
+          return;
+        }
+      }
+
+      const ahora = new Date();
+      const fecha = ahora.toLocaleDateString('es-CR');
+      const hora = ahora.toLocaleTimeString('es-CR');
+      const detalle = pedidoActual.map(i => `${i.nombre} x${i.cantidad}`).join(' | ');
+      const lineasDetalle = pedidoActual.map(i => `- ${i.nombre} x${i.cantidad}`).join('\n');
+      const consecutivoNumero = obtenerSiguienteConsecutivo();
+      const consecutivo = formatearConsecutivo(consecutivoNumero);
+
+      const venta = {
+        consecutivo,
+        fecha,
+        hora,
+        detalle,
+        lineasDetalle,
+        total,
+        metodo,
+        pago,
+        cambio
+      };
+
+      const ventas = JSON.parse(localStorage.getItem('ventas')) || [];
+      ventas.push(venta);
+      guardarVentas(ventas);
+
+      if (enviarACocina) {
+        enviarPedidoWhatsApp(venta);
+      }
+
+      alert(`Venta guardada correctamente. Orden #${consecutivo}`);
+      limpiarPedidoActual();
+    }
+
+    function enviarPedidoWhatsApp(venta) {
+      const telefono = (document.getElementById('telefonoCocina').value || '').trim();
+
+      if (!telefono) {
+        alert('Debe indicar el número de WhatsApp de cocina');
+        return;
+      }
+
+      const mensajeTexto =
+`Orden #${venta.consecutivo}
+${venta.lineasDetalle}
+
+Total: ₡${formatoMoneda(venta.total)}
+Pago: ${venta.metodo}`;
+
+      const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensajeTexto)}`;
+      window.open(url, '_blank');
+    }
+
+    function actualizarResumen(ventas) {
+      let totalVendido = 0;
+      let efectivo = 0;
+      let sinpe = 0;
+      let ultimoConsecutivo = '000';
+
+      ventas.forEach(v => {
+        totalVendido += Number(v.total);
+        ultimoConsecutivo = v.consecutivo || ultimoConsecutivo;
+
+        if (v.metodo === 'efectivo') {
+          efectivo += Number(v.total);
+        } else if (v.metodo === 'sinpe') {
+          sinpe += Number(v.total);
+        }
+      });
+
+      document.getElementById('resumenVentas').innerHTML = `
+        Cantidad de ventas: ${ventas.length}<br>
+        Última orden: #${ultimoConsecutivo}<br>
+        Total vendido: ₡${formatoMoneda(totalVendido)}<br>
+        Efectivo: ₡${formatoMoneda(efectivo)}<br>
+        SINPE: ₡${formatoMoneda(sinpe)}
+      `;
+    }
+
+    function renderUltimasVentas(ventas) {
+      const contenedor = document.getElementById('ultimasVentas');
+      contenedor.innerHTML = '';
+
+      const ultimas = ventas.slice(-5).reverse();
+
+      if (ultimas.length === 0) {
+        contenedor.innerHTML = '<div class="pedido-vacio">Todavía no hay ventas registradas.</div>';
+        return;
+      }
+
+      ultimas.forEach(v => {
+        const div = document.createElement('div');
+        div.className = 'venta-item';
+        div.innerHTML = `
+          <strong>Orden #${v.consecutivo}</strong><br>
+          ${v.fecha} ${v.hora}<br>
+          ${v.detalle}<br>
+          Total: <strong>₡${formatoMoneda(v.total)}</strong> | ${v.metodo.toUpperCase()}
+        `;
+        contenedor.appendChild(div);
+      });
+    }
+
+    function descargarCSV() {
+      const ventas = JSON.parse(localStorage.getItem('ventas')) || [];
+
+      if (ventas.length === 0) {
+        alert('No hay ventas guardadas para exportar');
+        return;
+      }
+
+      let csv = 'Consecutivo,Fecha,Hora,Detalle,Total,Metodo de pago,Monto recibido,Cambio\n';
+
+      ventas.forEach(v => {
+        csv += `"${v.consecutivo || ''}","${v.fecha}","${v.hora}","${v.detalle}","${v.total}","${v.metodo}","${v.pago}","${v.cambio}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const enlace = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      const fechaArchivo = new Date().toISOString().slice(0, 10);
+
+      enlace.setAttribute('href', url);
+      enlace.setAttribute('download', `ventas_${fechaArchivo}.csv`);
+      enlace.style.display = 'none';
+      document.body.appendChild(enlace);
+      enlace.click();
+      document.body.removeChild(enlace);
+    }
+
+    function borrarVentas() {
+      const confirmar = confirm('¿Desea borrar todas las ventas guardadas?');
+      if (!confirmar) return;
+
+      localStorage.removeItem('ventas');
+      localStorage.removeItem('consecutivoVentas');
+      actualizarResumen([]);
+      renderUltimasVentas([]);
+      alert('Ventas borradas correctamente');
+    }
+
+    document.getElementById('metodo').addEventListener('change', actualizarVistaMetodoPago);
+    document.getElementById('pago').addEventListener('input', calcularCambioEnPantalla);
+    document.getElementById('telefonoCocina').addEventListener('input', guardarTelefonoCocina);
+
+    inicializarProductos();
+    cargarVentas();
+  </script>
+</body>
+</html>
